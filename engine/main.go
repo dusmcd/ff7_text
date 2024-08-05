@@ -62,3 +62,24 @@ func NewCharacter(name string) Character {
 		Stats: initializeStatFields(),
 	}
 }
+
+func MapJsonToCharacters(characters []JsonCharacter) []Character {
+	result := []Character{}
+	for _, character := range characters {
+		result = append(result, Character{
+			Name: character.Name,
+		})
+	}
+	return result
+}
+
+func MapJsonToEnemies(enemies []EnemyJson) []Enemy {
+	result := []Enemy{}
+	for _, enemy := range enemies {
+		result = append(result, Enemy{
+			Name: enemy.Name,
+		})
+	}
+
+	return result
+}

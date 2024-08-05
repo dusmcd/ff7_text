@@ -1,0 +1,52 @@
+{
+    "characters": [
+         {
+            "name": "Cloud",
+            "description": "Ex-SOLDIER, 1st Class",
+            "maxHP": 300,
+            "currentHP": 300,
+            "maxMP": 50,
+            "currentMP": 50,
+            "weapon_name": "Buster Sword",
+            "weapon_strength": 25,
+            "armor_name": "Bronze Bangle",
+            "armor_defense": 20,
+            "armor_magic_defense": 15,
+            "base_strength": 46,
+            "base_defense": 40,
+            "base_magic_defense": 40,
+            "luck": 20,
+            "dexterity": 25,
+            "materia": ["lightning", "ice"]
+        },
+         {
+            "name": "Barrett",
+            "description": "Leader of Sector 7 Avalanche chapter",
+            "maxHP": 300,
+            "currentHP": 300,
+            "maxMP": 50,
+            "currentMP": 50,
+            "weapon_name": "Gatling Gun",
+            "weapon_strength": 25,
+            "armor_name": "Bronze Bangle",
+            "armor_defense": 20,
+            "armor_magic_defense": 15,
+            "base_strength": 45,
+            "base_defense": 50,
+            "base_magic_defense": 45,
+            "luck": 20,
+            "dexterity": 20,
+            "materia": []
+        }
+    ],
+    "enemies": [
+         {
+            "name": "Infantry",
+            "description": "Privates in Shinra army",
+            "maxHP": 50,
+            "currentHP": 50,
+            "maxMP": 10,
+            "currentMP": 10
+        }
+    ]
+}
