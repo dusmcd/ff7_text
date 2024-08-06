@@ -37,8 +37,9 @@ func (battle Battle) Fight(scanner *bufio.Scanner) {
 			fmt.Println("\tAttack")
 			fmt.Print("Input action: ")
 			scanner.Scan()
-			battle.Player.Attack(battle.Enemy)
-			fmt.Printf("You attacked %s for %d HP\n", battle.Enemy.Name, 100)
+			playerInput := scanner.Text()
+			command := getBattleCommand(playerInput)
+			command.Callback(battle.Player, battle.Enemy)
 		case <-enemyTicker.C:
 			fmt.Println("\nEnemy's turn")
 			battle.Enemy.Attack(battle.Player)
