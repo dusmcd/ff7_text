@@ -1,17 +1,27 @@
 package engine
 
 type Character struct {
-	Name   string
-	Weapon Weapon
-	Armor  Armor
-	Stats  Stats
+	Name        string
+	Description string
+	Weapon      Weapon
+	Armor       Armor
+	Stats       Stats
 	Health
 	DefenseStatus bool
+	Materias      []string
+	Accessory     Accessory
+}
+
+type Materia struct {
+	Name       string
+	Spells     []string
+	BaseDamage byte
 }
 
 type Enemy struct {
-	Name  string
-	Stats Stats
+	Name        string
+	Description string
+	Stats       Stats
 	Health
 }
 
@@ -67,7 +77,31 @@ func MapJsonToCharacters(characters []JsonCharacter) []Character {
 	result := []Character{}
 	for _, character := range characters {
 		result = append(result, Character{
-			Name: character.Name,
+			Name:        character.Name,
+			Description: character.Description,
+			Health: Health{
+				CurrentHP: character.CurrentHP,
+				MaxHP:     character.MaxHP,
+				CurrentMP: character.CurrentMP,
+				MaxMP:     character.MaxMP,
+			},
+			Armor: Armor{
+				Name:         character.ArmorName,
+				Defense:      byte(character.ArmorDefense),
+				MagicDefense: byte(character.ArmorMagicDefense),
+			},
+			Weapon: Weapon{
+				Name:     character.WeaponName,
+				Strength: byte(character.WeaponStrength),
+			},
+			Stats: Stats{
+				"Luck":             character.Luck,
+				"Dexterity":        character.Dexterity,
+				"BaseStrength":     character.BaseStrength,
+				"BaseDefense":      character.BaseDefense,
+				"BaseMagicDefense": character.BaseMagicDefense,
+			},
+			Materias: character.Materia,
 		})
 	}
 	return result
@@ -77,7 +111,14 @@ func MapJsonToEnemies(enemies []EnemyJson) []Enemy {
 	result := []Enemy{}
 	for _, enemy := range enemies {
 		result = append(result, Enemy{
-			Name: enemy.Name,
+			Name:        enemy.Name,
+			Description: enemy.Description,
+			Health: Health{
+				CurrentHP: enemy.CurrentHP,
+				CurrentMP: enemy.CurrentMP,
+				MaxHP:     enemy.MaxHP,
+				MaxMP:     enemy.MaxMP,
+			},
 		})
 	}
 

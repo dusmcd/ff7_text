@@ -3,7 +3,6 @@ package engine
 import (
 	"bufio"
 	"fmt"
-	"os"
 	"time"
 )
 
@@ -13,10 +12,12 @@ type Battle struct {
 	Status string
 }
 
-func (battle Battle) Fight() {
+type Game struct {
+	BattleState bool
+}
+
+func (battle Battle) Fight(scanner *bufio.Scanner) {
 	fmt.Println("You are fighting", battle.Enemy.Name)
-	reader := bufio.NewReader(os.Stdin)
-	scanner := bufio.NewScanner(reader)
 	for {
 		if battle.Status == "over" {
 			// show result of battle, e.g., player won, player defeated, or player escaped
@@ -25,6 +26,7 @@ func (battle Battle) Fight() {
 		}
 		fmt.Println("Choose an action:")
 		fmt.Println("\tAttack")
+		fmt.Print("Input action: ")
 		scanner.Scan()
 		battle.Player.Attack(&battle.Enemy)
 		fmt.Printf("You attacked %s for %d HP\n", battle.Enemy.Name, 100)
@@ -43,12 +45,11 @@ func NewBattle(player Character, enemy Enemy) Battle {
 	}
 }
 
-func InitiateRandomEncounters(interval int, player Character, enemy Enemy) *time.Ticker {
+func InitiateRandomEncounters(interval int, scanner *bufio.Scanner) *time.Ticker {
 	// this will run concurrently with the main game logic
 	// for now, I will set this on a timer that will go off at a specified interval
 	// i.e., the player will encounter an enemy every 100 seconds (or whatever the interval is)
 	ch := time.NewTicker(time.Duration(interval) * time.Second)
-	go startBattles(ch, player, enemy)
 	return ch
 }
 
@@ -59,19 +60,4 @@ func StopRandomEncounters(ticker *time.Ticker) {
 
 func RestartRandomEncounters(ticker *time.Ticker, interval int) {
 	ticker.Reset(time.Duration(interval) * time.Second)
-}
-
-func startBattles(ticker *time.Ticker, player Character, enemy Enemy) {
-	for {
-		select {
-		case <-ticker.C:
-			StopRandomEncounters(ticker)
-			battle := NewBattle(player, enemy)
-			battle.Fight()
-			RestartRandomEncounters(ticker, 100)
-		default:
-			time.Sleep(5 * time.Second)
-		}
-
-	}
 }

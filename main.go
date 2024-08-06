@@ -19,35 +19,34 @@ func main() {
 func play() {
 	reader := bufio.NewReader(os.Stdin)
 	scanner := bufio.NewScanner(reader)
-	player := engine.NewCharacter("Cloud")
-	enemy := engine.Enemy{
-		Name: "Infantry",
-		Health: engine.Health{
-			CurrentHP: 50,
-			MaxHP:     50,
-			CurrentMP: 10,
-			MaxMP:     10,
-		},
+	players, enemies, err := getInitData()
+	if err != nil {
+		log.Fatal(err)
 	}
-	battle := engine.Battle{
-		Player: player,
-		Enemy:  enemy,
-	}
-	battle.Fight()
+	ticker := engine.InitiateRandomEncounters(5, scanner)
 	for {
-		fmt.Print("Commands> ")
-		playerInput := getPlayerInput(scanner)
-		if playerInput == "exit" {
-			break
+		select {
+		case <-ticker.C:
+			engine.StopRandomEncounters(ticker)
+			battle := engine.NewBattle(players[0], enemies[0])
+			battle.Fight(scanner)
+			engine.RestartRandomEncounters(ticker, 5)
+		default:
+			fmt.Print("Commands> ")
+			playerInput := getPlayerInput(scanner)
+			if playerInput == "exit" {
+				return
+			}
+
+			action := getCommand(playerInput)
+			err := action.callback()
+			if err != nil {
+				fmt.Println("An error occurred")
+				log.Println(err.Error())
+				continue
+			}
 		}
 
-		action := getCommand(playerInput)
-		err := action.callback()
-		if err != nil {
-			fmt.Println("An error occurred")
-			log.Println(err.Error())
-			continue
-		}
 	}
 }
 
