@@ -17,12 +17,13 @@ func PlayGame(gameMoment int, gameState CurrentGameState) {
 	reader := bufio.NewReader(os.Stdin)
 	scanner := bufio.NewScanner(reader)
 	ticker := InitiateRandomEncounters(5, scanner)
+	player := gameState.Characters[0]
+	enemy := gameState.Enemies[0]
+
 	for {
 		select {
 		case <-ticker.C:
-			player := gameState.Characters[0]
-			enemy := gameState.Enemies[0]
-			startRandomBattle(ticker, player, enemy, scanner)
+			startRandomBattle(ticker, &player, &enemy, scanner)
 		default:
 			fmt.Print("Commands> ")
 			playerInput := getPlayerInput(scanner)
@@ -40,7 +41,7 @@ func getPlayerInput(scanner *bufio.Scanner) string {
 	return scanner.Text()
 }
 
-func startRandomBattle(ticker *time.Ticker, player Character, enemy Enemy, scanner *bufio.Scanner) {
+func startRandomBattle(ticker *time.Ticker, player *Character, enemy *Enemy, scanner *bufio.Scanner) {
 	StopRandomEncounters(ticker)
 	battle := NewBattle(player, enemy)
 	battle.Fight(scanner)
