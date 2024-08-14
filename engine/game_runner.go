@@ -25,12 +25,20 @@ func PlayGame(gameMoment int, gameState CurrentGameState) {
 		case <-ticker.C:
 			startRandomBattle(ticker, &player, &enemy, scanner)
 		default:
+			continueStory(gameMoment)
 			fmt.Print("Commands> ")
 			playerInput := getPlayerInput(scanner)
 			if playerInput == "exit" {
 				return
 			}
-			continueStory(gameMoment, playerInput)
+
+			action := getCommand(playerInput)
+			err := action.callback()
+			if err != nil {
+				fmt.Println("An error occurred")
+				log.Println(err.Error())
+			}
+
 		}
 	}
 
@@ -48,12 +56,35 @@ func startRandomBattle(ticker *time.Ticker, player *Character, enemy *Enemy, sca
 	RestartRandomEncounters(ticker, 5)
 }
 
-func continueStory(gameMoment int, playerInput string) {
-
-	action := getCommand(playerInput)
-	err := action.callback()
-	if err != nil {
-		fmt.Println("An error occurred")
-		log.Println(err.Error())
+func continueStory(gameMoment int) {
+	story := []StoryBlock{
+		{
+			Moment: 0,
+			Narration: "A train speeds through a large metropolis. It screeches to a halt at a large energy plant\n" +
+				"A young mercenary leaps off the top of the train while his companions wait for him",
+			Dialogue: []map[string]string{
+				{
+					"Companion 1": "What's your name",
+				},
+				{
+					"Mercenary": "I don't care about learning your name",
+				},
+			},
+		},
+		{
+			Moment:    1,
+			Narration: "The mercenary encounters two armed soldiers. He engages them in battle",
+			Dialogue: []map[string]string{
+				{
+					"Barret": "Ex-Shinra, huh? I don't trust you",
+				},
+				{
+					"Mercenary": "It doesn't matter what you think",
+				},
+			},
+		},
 	}
+
+	currentStory := FindGameMoment(story, gameMoment)
+	PrintStory(currentStory)
 }
